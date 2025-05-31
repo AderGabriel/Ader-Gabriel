@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Atrapa la Rana Loca 🐸</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #c3f3c3;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #startBtn {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    #gameArea {
+      margin: 30px auto;
+      width: 500px;
+      height: 500px;
+      border: 3px dashed green;
+      position: relative;
+      background-color: #e6ffe6;
+      display: none;
+    }
+
+    .frog {
+      width: 60px;
+      height: 60px;
+      background-image: url('https://emojicdn.elk.sh/🐸');
+      background-size: cover;
+      position: absolute;
+      cursor: pointer;
+    }
+
+    #score, #timer {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🐸 ¡Atrapa la Rana Loca! 🐸</h1>
+  <button id="startBtn">Iniciar Juego</button>
+  <div id="score">Puntos: 0</div>
+  <div id="timer">Tiempo: 15</div>
+  <div id="gameArea"></div>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const gameArea = document.getElementById("gameArea");
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("timer");
+
+    let score = 0;
+    let timeLeft = 15;
+    let frog;
+    let gameInterval;
+    let timerInterval;
+
+    function randomPosition(max) {
+      return Math.floor(Math.random() * (max - 60));
+    }
+
+    function spawnFrog() {
+      if (frog) frog.remove();
+
+      frog = document.createElement("div");
+      frog.classList.add("frog");
+
+      frog.style.top = randomPosition(gameArea.clientHeight) + "px";
+      frog.style.left = randomPosition(gameArea.clientWidth) + "px";
+
+      frog.addEventListener("click", () => {
+        score += 5;
+        scoreDisplay.textContent = "Puntos: " + score;
+        spawnFrog();
+      });
+
+      gameArea.appendChild(frog);
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 15;
+      scoreDisplay.textContent = "Puntos: 0";
+      timerDisplay.textContent = "Tiempo: 15";
+      gameArea.style.display = "block";
+
+      spawnFrog();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = "Tiempo: " + timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          clearInterval(gameInterval);
+          frog.remove();
+          alert("⏰ ¡Se acabó el tiempo! Tu puntaje fue: " + score);
+          gameArea.style.display = "none";
+        }
+      }, 1000);
+
+      gameInterval = setInterval(() => {
+        spawnFrog();
+      }, 1000);
+    }
+
+    startBtn.addEventListener("click", startGame);
+  </script>
+
+</body>
+</html>
